@@ -1,12 +1,31 @@
-class_name PlayerStateIdle extends PlayerState
+class_name PlayerStateIdle
+extends PlayerState
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
+func enter() -> void:
+	print("Entered Idle")
+	player.velocity.x = 0
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	pass
+func physics_process(_delta: float) -> PlayerState:
+	# Fell off platform
+	if not player.is_on_floor():
+		return fall
 	
+	# Start running
+	if player.direction.x != 0:
+		return run
+	
+	# Jump
+	if Input.is_action_just_pressed("jump"):
+		return jump
+	
+	# Crouch
+	if Input.is_action_pressed("down"):
+		return crouch
+	
+	# Dash
+	if Input.is_action_just_pressed("dash"):
+		return dash
+	
+	return next_state
