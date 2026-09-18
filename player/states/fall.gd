@@ -7,6 +7,7 @@ var air_speed: float = 400.0
 
 func enter() -> void:
 	print("Entered Fall")
+	player.animation_player.play("fall")
 
 
 func physics_process(_delta: float) -> PlayerState:
@@ -15,12 +16,11 @@ func physics_process(_delta: float) -> PlayerState:
 	player.velocity.x = direction * air_speed
 	
 	# Dash while falling
-	if Input.is_action_just_pressed("dash"):
+	
+	if Input.is_action_just_pressed("dash") && player.can_dash:
 		return dash
 	
-	# Crouch input
-	if Input.is_action_pressed("down"):
-		return crouch
+	
 	
 	# Landed
 	if player.is_on_floor():

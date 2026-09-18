@@ -7,6 +7,7 @@ var speed: float = 400.0
 
 func enter() -> void:
 	print("Entered Run")
+	player.animation_player.play("run")
 
 
 func physics_process(_delta: float) -> PlayerState:
@@ -29,10 +30,11 @@ func physics_process(_delta: float) -> PlayerState:
 	
 	# Crouch
 	if Input.is_action_pressed("down"):
+		player.velocity.x=0
 		return crouch
 	
 	# Dash
-	if Input.is_action_just_pressed("dash"):
+	if Input.is_action_just_pressed("dash") && player.can_dash:
 		return dash
 	
 	return next_state

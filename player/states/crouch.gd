@@ -4,6 +4,7 @@ extends PlayerState
 
 func enter() -> void:
 	print("Entered Crouch")
+	player.animation_player.play("crouch")
 
 
 func physics_process(_delta: float) -> PlayerState:
@@ -13,9 +14,10 @@ func physics_process(_delta: float) -> PlayerState:
 			return run
 		else:
 			return idle
-	
+	if Input.is_action_just_pressed("jump"):
+		return jump
 	# Dash
-	if Input.is_action_just_pressed("dash"):
+	if Input.is_action_just_pressed("dash") && player.can_dash:
 		return dash
 	
 	return next_state

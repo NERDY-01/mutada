@@ -1,6 +1,10 @@
 class_name Player
 extends CharacterBody2D
 
+#region /// on ready variables
+@onready var animation_player : AnimationPlayer=$AnimationPlayer
+
+#endregion
 
 #region State Machine Variables
 
@@ -20,15 +24,16 @@ var previous_state: PlayerState:
 
 
 #region Standard Variables
-
+var Last_facing_direction: Vector2=Vector2.RIGHT
 var direction: Vector2 = Vector2.ZERO
 var gravity: float = 980.0
-
+var can_dash: bool=true
 #endregion
 
 
 func _ready() -> void:
 	initialize_states()
+	
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -36,6 +41,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	
 	update_direction()
 	change_state(current_state.process(delta))
 
@@ -43,7 +49,8 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	# Apply gravity
 	velocity.y += gravity * delta
-	
+	if get_slide_collision_count()>0:
+		can_dash=true
 	# Let the current state control movement
 	change_state(current_state.physics_process(delta))
 	
@@ -105,9 +112,17 @@ func change_state(new_state: PlayerState) -> void:
 #region Direction
 
 func update_direction() -> void:
+	var prev_direction: Vector2 =direction
 	var x_axis := Input.get_axis("left", "right")
 	var y_axis := Input.get_axis("jump", "down")
 	
 	direction = Vector2(x_axis, y_axis)
+	if direction.x != 0:
+		Last_facing_direction = Vector2(direction.x, 0).normalized()
+	if prev_direction.x!=direction.x:
+		if direction.x<0:
+			$Sprite2D.flip_h=true
+		if direction.x>0:
+			$Sprite2D.flip_h=false
 
 #endregion

@@ -4,6 +4,7 @@ extends PlayerState
 
 func enter() -> void:
 	print("Entered Idle")
+	player.animation_player.play("idle")
 	player.velocity.x = 0
 
 
@@ -25,7 +26,7 @@ func physics_process(_delta: float) -> PlayerState:
 		return crouch
 	
 	# Dash
-	if Input.is_action_just_pressed("dash"):
+	if Input.is_action_just_pressed("dash") && player.can_dash:
 		return dash
 	
 	return next_state
